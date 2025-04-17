@@ -18,6 +18,7 @@ fun HomeScreen(navController: NavHostController){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(text = "Pantalla de Inicio")
         Button(
             onClick = { navController.navigate(Screens.Login.route) }
         ) {
