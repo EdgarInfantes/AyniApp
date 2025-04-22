@@ -65,7 +65,7 @@ fun SignUpScreen(navController: NavHostController){
             Text(
                 text = "AyniApp",
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.error,
+                color = Color(0xFF00C853),
                 fontWeight = FontWeight.Bold
             )
             // Separador
@@ -87,7 +87,7 @@ fun SignUpScreen(navController: NavHostController){
                     .padding(vertical = 6.dp, horizontal = 6.dp)
                     .border(
                         width = 1.dp,
-                        color = Color.Red,
+                        color = Color(0xFF00C853),
                         shape = RoundedCornerShape(12.dp)
                     )
             ) {
@@ -105,8 +105,8 @@ fun SignUpScreen(navController: NavHostController){
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    label = { Text("Usuario") },
-                    placeholder = { Text("usuario@dominio.com") }
+                    label = { Text("Usuario", color = Color(0xFF00C853)) },
+                    placeholder = { Text("usuario@dominio.com", color = Color(0xFFB5B0AD)) }
                 )
             }
             Box(
@@ -116,7 +116,7 @@ fun SignUpScreen(navController: NavHostController){
                     .padding(vertical = 6.dp, horizontal = 6.dp)
                     .border(
                         width = 1.dp,
-                        color = Color.Red,
+                        color = Color(0xFF00C853),
                         shape = RoundedCornerShape(12.dp)
                     )
             ) {
@@ -133,7 +133,7 @@ fun SignUpScreen(navController: NavHostController){
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    label = { Text("Password") },
+                    label = { Text("Password", color = Color(0xFF00C853)) },
                     visualTransformation = PasswordVisualTransformation()
                 )
             }
@@ -144,7 +144,7 @@ fun SignUpScreen(navController: NavHostController){
                     .padding(vertical = 6.dp, horizontal = 6.dp)
                     .border(
                         width = 1.dp,
-                        color = Color.Red,
+                        color = Color(0xFF00C853),
                         shape = RoundedCornerShape(12.dp)
                     )
             ) {
@@ -161,12 +161,20 @@ fun SignUpScreen(navController: NavHostController){
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    label = { Text("Confirmar Password") },
+                    label = { Text("Confirmar Password", color = Color(0xFF00C853)) },
                     visualTransformation = PasswordVisualTransformation()
                 )
             }
             // Separador
             Spacer(modifier = Modifier.height(5.dp))
+
+            //Poner alerta de contraseñas no coincidentes
+            if (passText != verifyPassText) {
+                Text(
+                    text = "Las contraseñas no coinciden",
+                    color = Color.Red,
+                    modifier = Modifier.padding(vertical = 16.dp))
+            }
 
             //Button Iniciar Sesión
             Button(
@@ -176,7 +184,7 @@ fun SignUpScreen(navController: NavHostController){
                     .height(50.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
+                    containerColor = Color(0xFF00C853),
                     contentColor = Color.White
                 ),
                 enabled = passText == verifyPassText && userText.isNotBlank() && passText.isNotBlank() && verifyPassText.isNotBlank(),
@@ -207,7 +215,7 @@ fun SignUpScreen(navController: NavHostController){
                 Text(
                     text = "Iniciar Sesión",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error,
+                    color = Color(0xFF00C853),
                     fontSize = 16.sp,
                     modifier = Modifier.clickable { navController.navigate(Screens.Login.route) }
                 )

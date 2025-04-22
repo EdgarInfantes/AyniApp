@@ -60,7 +60,7 @@ fun LoginScreen(navController: NavHostController){
         Text(
             text = "AyniApp",
             style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.error,
+            color = Color(0xFF00C853),
             fontWeight = FontWeight.Bold
         )
         // Separador
@@ -212,7 +212,7 @@ fun LoginScreen(navController: NavHostController){
                 .padding(vertical = 6.dp, horizontal = 6.dp)
                 .border(
                     width = 1.dp,
-                    color = Color.Red,
+                    color = Color(0xFF00C853),
                     shape = RoundedCornerShape(12.dp)
                 )
         ) {
@@ -228,10 +228,10 @@ fun LoginScreen(navController: NavHostController){
                     disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+                    disabledIndicatorColor = Color.Transparent,
                 ),
-                label = { Text("Usuario") },
-                placeholder = { Text("usuario@dominio.com") }
+                label = { Text("Usuario", color = Color(0xFF00C853))},
+                placeholder = { Text("usuario@dominio.com", color = Color(0xFFB5B0AD))},
             )
         }
         Box(
@@ -241,7 +241,7 @@ fun LoginScreen(navController: NavHostController){
                 .padding(vertical = 6.dp, horizontal = 6.dp)
                 .border(
                     width = 1.dp,
-                    color = Color.Red,
+                    color = Color(0xFF00C853),
                     shape = RoundedCornerShape(12.dp)
                 )
         ) {
@@ -251,14 +251,16 @@ fun LoginScreen(navController: NavHostController){
                 value = passText,
                 onValueChange = { passText = it },
                 colors = TextFieldDefaults.colors(
+
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                     disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
+
                 ),
-                label = { Text("Password") },
+                label = { Text("Password", color = Color(0xFF00C853)) },
                 visualTransformation = PasswordVisualTransformation()
             )
         }
@@ -274,14 +276,14 @@ fun LoginScreen(navController: NavHostController){
                 .height(50.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error,
+                containerColor = Color(0xFF00C853),
                 contentColor = Color.White
             ),
-            enabled = userText.isNotBlank() && passText.isNotBlank(),
+            enabled = userText.isNotBlank() && passText.isNotBlank()
         ) {
             Text("Ingresar",
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
+                color = Color(0xFFFFFFFF),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -292,7 +294,7 @@ fun LoginScreen(navController: NavHostController){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(top = 10.dp)
+            modifier = Modifier.padding(top = 10.dp),
         )
         {
             Text(
@@ -305,7 +307,7 @@ fun LoginScreen(navController: NavHostController){
             Text(
                 text = "Registrarte",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error,
+                color = Color(0xFF00C853),
                 fontSize = 16.sp,
                 modifier = Modifier.clickable { navController.navigate(Screens.SignUp.route) }
             )
@@ -329,7 +331,7 @@ fun LoginScreen(navController: NavHostController){
             Text(
                 text = "Recuperar Contraseña",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error,
+                color = Color(0xFF00C853),
                 fontSize = 16.sp,
                 modifier = Modifier.clickable { navController.navigate(Screens.ResetPassword.route) }
             )

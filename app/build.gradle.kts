@@ -58,4 +58,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3") //Images
     implementation("androidx.navigation:navigation-compose:2.7.7") //Navigation
+
 }
