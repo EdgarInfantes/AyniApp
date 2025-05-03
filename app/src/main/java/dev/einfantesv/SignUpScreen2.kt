@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,10 +20,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -45,7 +51,7 @@ import dev.einfantesv.core.navigation.Screens
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SignUpScreen(navController: NavHostController){
+fun SignUpScreen2(navController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,10 +60,10 @@ fun SignUpScreen(navController: NavHostController){
             .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         //Variables del LoginScreen
-        var emailText by remember { mutableStateOf("") }
-        var valEmailText by remember { mutableStateOf("") }
+        var userName by remember { mutableStateOf("") }
+        var userApellido by remember { mutableStateOf("") }
         val isKeyboardVisible = WindowInsets.isImeVisible
 
         Column(
@@ -65,6 +71,30 @@ fun SignUpScreen(navController: NavHostController){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 1.dp, start = 1.dp),
+                contentAlignment = Alignment.TopStart
+            ) {
+                Button(
+                    onClick = { navController.navigate(Screens.SignUp.route) },
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFFFFFF),
+                        contentColor = Color.Black,
+                    ),
+                    contentPadding = PaddingValues(8.dp),
+                    modifier = Modifier
+                        .border(width = 1.dp, color = Color.Gray, shape = CircleShape)
+                        .size(40.dp)
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                }
+
+            }
+
             //Nombre de la APP
             Text(
                 text = "Bienvenido a",
@@ -105,8 +135,8 @@ fun SignUpScreen(navController: NavHostController){
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    value = emailText,
-                    onValueChange = { emailText = it },
+                    value = userName,
+                    onValueChange = { userName = it },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
@@ -115,10 +145,15 @@ fun SignUpScreen(navController: NavHostController){
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    label = { Text("Correo", color = Color(0xFF00C853)) },
-                    placeholder = { Text("usuario@dominio.com", color = Color(0xFFB5B0AD)) }
+                    label = { Text("Nombre", color = Color(0xFF00C853)) },
+                    placeholder = { Text("Tu nombre", color = Color(0xFFB5B0AD)) }
                 )
             }
+
+            // Separador
+            Spacer(modifier = Modifier.height(5.dp))
+
+            //Apellido
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
@@ -134,8 +169,8 @@ fun SignUpScreen(navController: NavHostController){
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    value = valEmailText,
-                    onValueChange = { valEmailText = it },
+                    value = userApellido,
+                    onValueChange = { userApellido = it },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
@@ -144,26 +179,27 @@ fun SignUpScreen(navController: NavHostController){
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    label = { Text("Verifica tu correo", color = Color(0xFF00C853)) },
-                    placeholder = { Text("usuario@dominio.com", color = Color(0xFFB5B0AD)) }
+                    label = { Text("Nombre", color = Color(0xFF00C853)) },
+                    placeholder = { Text("Tu nombre", color = Color(0xFFB5B0AD)) }
                 )
             }
 
             // Separador
             Spacer(modifier = Modifier.height(5.dp))
 
-            //Poner alerta de correos no coincidentes
-            if (!isKeyboardVisible && emailText != valEmailText) {
+            //Poner alerta de sin datos
+            if (!isKeyboardVisible && userName.isEmpty() != userApellido.isEmpty()) {
                 Text(
-                    text = "Los correos no coinciden",
+                    text = "Ingrese sus datos",
                     color = Color.Red,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
             }
 
-            //Button Iniciar Sesión
+
+            //Button Siguiente
             Button(
-                onClick = { navController.navigate(Screens.SignUp2.route) },
+                onClick = { navController.navigate(Screens.SignUp3.route) },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(50.dp),
@@ -172,7 +208,7 @@ fun SignUpScreen(navController: NavHostController){
                     containerColor = Color(0xFF00C853),
                     contentColor = Color.White
                 ),
-                enabled = emailText == valEmailText && emailText.isNotBlank() && valEmailText.isNotBlank(),
+                enabled = userName.isNotBlank() && userApellido.isNotBlank(),
             ) {
                 Text("Siguiente",
                     style = MaterialTheme.typography.bodyLarge,
@@ -181,29 +217,6 @@ fun SignUpScreen(navController: NavHostController){
                     fontWeight = FontWeight.Bold
                 )
 
-            }
-
-            //Fila Ya Tiene una cuenta
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(top = 10.dp)
-            )
-            {
-                Text(
-                    text = "¿Ya tienes una cuenta?"
-                )
-                // Separador
-                Spacer(modifier = Modifier.width(5.dp))
-
-                //Texto Clickeale para mandar al SignUpScreen
-                Text(
-                    text = "Iniciar Sesión",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color(0xFF00C853),
-                    fontSize = 16.sp,
-                    modifier = Modifier.clickable { navController.navigate(Screens.Login.route) }
-                )
             }
         }
     }

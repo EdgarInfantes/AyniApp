@@ -9,6 +9,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class Screens(val route: String) {
     object Login : Screens("login")
     object SignUp : Screens("signup")
+    object SignUp2 : Screens("signup2")
+    object SignUp3 : Screens("signup3")
     object Home : Screens("home")
     object ResetPassword : Screens("reset_password")
 }
