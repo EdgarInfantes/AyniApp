@@ -1,4 +1,4 @@
-package dev.einfantesv
+package dev.einfantesv.presentation.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -57,6 +58,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3") //Images
+    implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("androidx.navigation:navigation-compose:2.7.7") //Navigation
-
+    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
+    implementation("com.google.firebase:firebase-auth-ktx") //Auth Firebase
+    implementation("com.google.firebase:firebase-firestore-ktx") //Fire
+    implementation("com.google.firebase:firebase-storage") //Sotrage
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0") //Sync color system bar
 }

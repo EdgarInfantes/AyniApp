@@ -6,10 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
-import dev.einfantesv.PromotionsScreen
+import dev.einfantesv.presentation.home.PromotionsScreen
 import dev.einfantesv.screens.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.einfantesv.UserSessionViewModel
+import dev.einfantesv.core.navigation.comprador.BottomNavItem
+import dev.einfantesv.presentation.auth.SignUpVendedorScreen
+import dev.einfantesv.presentation.home.AdminVendedorScreen
+import dev.einfantesv.presentation.home.HomeVendedorScreen
 
-    //Se agrega para poder usar el BottomBar
+
+//Se agrega para poder usar el BottomBar
 @Composable
 fun HomeNavigation(mainNavController: NavHostController) {
     val bottomNavController = rememberNavController()
@@ -19,6 +26,8 @@ fun HomeNavigation(mainNavController: NavHostController) {
         BottomNavItem.Profile,
     )
 
+    val userSessionViewModel: UserSessionViewModel = viewModel()
+
     Scaffold(
         bottomBar = { BottomBar(navController = bottomNavController, items = items) }
     ) { padding ->
@@ -27,9 +36,22 @@ fun HomeNavigation(mainNavController: NavHostController) {
             startDestination = BottomNavItem.Home.route,
             modifier = Modifier.padding(padding)
         ) {
-            composable(BottomNavItem.Home.route) { HomeScreen(mainNavController) }
-            composable(BottomNavItem.Promotions.route) { PromotionsScreen(mainNavController) }
-            composable(BottomNavItem.Profile.route) { ProfileScreen(mainNavController) }
+            composable(BottomNavItem.Home.route) {
+                HomeScreen(mainNavController, userSessionViewModel)
+            }
+            composable(BottomNavItem.Promotions.route) {
+                PromotionsScreen(mainNavController)
+            }
+            composable(BottomNavItem.Profile.route) {
+                ProfileScreen(mainNavController, userSessionViewModel)
+            }
+            composable(BottomNavItem.SignUpVendedor.route) {
+                SignUpVendedorScreen(mainNavController)
+            }
+            composable("adminVendedor") {
+                AdminVendedorScreen(mainNavController)
+            }
+
         }
     }
 }

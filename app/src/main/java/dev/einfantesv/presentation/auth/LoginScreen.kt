@@ -1,4 +1,4 @@
-package dev.einfantesv
+package dev.einfantesv.presentation.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -21,7 +21,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -38,8 +37,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import dev.einfantesv.R
+import dev.einfantesv.UserSessionViewModel
 import dev.einfantesv.core.navigation.Screens
+import dev.einfantesv.firebase.FirebaseAuthManager
+import dev.einfantesv.models.TempUserData
+import dev.einfantesv.util.ActionButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(navController: NavHostController){
@@ -47,6 +55,10 @@ fun LoginScreen(navController: NavHostController){
     //Variables del LoginScreen
     var userText by remember { mutableStateOf("") }
     var passText by remember { mutableStateOf("") }
+    var snackbarVisible by remember { mutableStateOf(false) }
+    var snackbarMessage by remember { mutableStateOf("") }
+    var snackbarColor by remember { mutableStateOf(Color.Green) }
+    val viewModel: UserSessionViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -82,136 +94,6 @@ fun LoginScreen(navController: NavHostController){
         // Separador
         Spacer(modifier = Modifier.height(40.dp))
 
-        /*
-        //Fila de Usuario
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            //Box para el texto
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                    .height(55.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Red,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .padding(12.dp)
-            ) {
-                //Text: Usuario
-                Text(
-                    text = "Usuario",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 16.sp,
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            // Separador
-            Spacer(modifier = Modifier.width(1.dp))
-
-            //Box para el Texfield
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Red,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            ) {
-                //TextField: Usuario
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = userText,
-                    onValueChange = { userText = it },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    placeholder = { Text("usuario@dominio.com") }
-                )
-            }
-
-        }
-
-        // Separador
-        Spacer(modifier = Modifier.height(10.dp))
-
-        //Fila de Contraseña
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            //Box para el texto
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                    .height(55.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Red,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .padding(12.dp)
-            ) {
-                //Text: Password
-                Text(
-                    text = "Password",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 16.sp,
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            // Separador
-            Spacer(modifier = Modifier.width(1.dp))
-
-            //Box para el Texfield
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(70.dp)
-                    .padding(vertical = 6.dp, horizontal = 6.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Red,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            ) {
-                //TextField: Password
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = passText,
-                    onValueChange = { passText = it },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    visualTransformation = PasswordVisualTransformation()
-                )
-            }
-
-        }
-        */
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
@@ -276,50 +158,81 @@ fun LoginScreen(navController: NavHostController){
         Spacer(modifier = Modifier.height(5.dp))
 
         //Button Iniciar Sesión
-        Button(
-            onClick = { navController.navigate(Screens.Home.route) },
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF00C853),
-                contentColor = Color.White
-            ),
-            enabled = userText.isNotBlank() && passText.isNotBlank()
-        ) {
-            Text("Ingresar",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFFFFFFFF),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
+        ActionButton(
+            label = "Iniciar sesión",
+            onClick = {
+                val emailError = userText.isBlank()
+                val passwordError = passText.isBlank()
 
-        }
+                if (!emailError && !passwordError) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = FirebaseAuthManager.loginUser(userText, passText)
+                        val rol = FirebaseAuthManager.getUserRole()
 
-        //Fila Crear Cuenta
+                        if (result.isSuccess) {
+                            if (rol == "comprador") {
+                                // Cargar los datos del usuario al iniciar sesión
+                                viewModel.loadUserData()
+                                navController.navigate("home") {
+                                    popUpTo("login") { inclusive = true }
+                                    launchSingleTop = true
+                                }
+
+                            } else if (rol == "vendedor") {
+                                navController.navigate("homeVendedor") {
+                                    popUpTo(0)
+                                }
+                            }
+
+
+
+
+                        }
+                        else {
+                            snackbarMessage = "Datos incorrectos"
+                            snackbarColor = Color(0xFFF44336)
+                        }
+                        snackbarVisible = true
+                    }
+                } else {
+                }
+            }
+        )
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(top = 10.dp),
-        )
-        {
-            Text(
-                text = "O puedes"
-            )
-            // Separador
-            Spacer(modifier = Modifier.width(5.dp))
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text(text = "O puedes registrarte como ")
 
-            //Texto Clickeale para mandar al SignUpScreen
             Text(
-                text = "Registrarte",
-                style = MaterialTheme.typography.bodyLarge,
+                text = "comprador",
                 color = Color(0xFF00C853),
+                style = MaterialTheme.typography.bodyLarge,
                 fontSize = 16.sp,
-                modifier = Modifier.clickable { navController.navigate(Screens.SignUp.route) }
+                modifier = Modifier.clickable {
+                    navController.navigate(Screens.SignUp.route)
+                }
             )
 
+            Text(text = " o ")
+
+            Text(
+                text = "vendedor",
+
+                color = Color(0xFF00C853),
+                style = MaterialTheme.typography.bodyLarge,
+                fontSize = 16.sp,
+                modifier = Modifier.clickable {
+                    TempUserData.vendedor = true
+                    navController.navigate(Screens.SignUp.route)
+                }
+            )
         }
+
 
         //Fila Resetear Contraseña
         Row(

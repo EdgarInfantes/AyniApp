@@ -1,26 +1,49 @@
 package dev.einfantesv.core.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.einfantesv.firebase.FirebaseAuthManager
 
-import dev.einfantesv.LoginScreen
-import dev.einfantesv.ResetPasswordScreen
-import dev.einfantesv.SignUpScreen
-import dev.einfantesv.SignUpScreen2
-import dev.einfantesv.SignUpScreen3
+import dev.einfantesv.presentation.auth.LoginScreen
+import dev.einfantesv.presentation.auth.ResetPasswordScreen
+import dev.einfantesv.presentation.auth.SignUpScreen
+import dev.einfantesv.presentation.auth.SignUpScreen2
+import dev.einfantesv.presentation.auth.SignUpScreen3
+import dev.einfantesv.presentation.auth.SignUpVendedorScreen
+import dev.einfantesv.presentation.home.AdminVendedorScreen
+import dev.einfantesv.presentation.home.HomeVendedorScreen
+import dev.einfantesv.presentation.home.ProductosDelVendedorScreen
 
 
 @Composable
 fun NavigationWrapper() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screens.Login.route) {
+    // Verifica si ya hay una sesión activa
+    val isLoggedIn = remember { FirebaseAuthManager.isUserLoggedIn() }
+
+    NavHost(
+        navController = navController,
+        startDestination = if (isLoggedIn) "home" else "login"
+    ){
         composable(Screens.Login.route) { LoginScreen(navController) }
         composable(Screens.Home.route) { HomeNavigation(navController) }
         composable(Screens.SignUp.route) { SignUpScreen(navController) }
         composable(Screens.SignUp2.route) { SignUpScreen2(navController) }
         composable(Screens.SignUp3.route) { SignUpScreen3(navController) }
         composable(Screens.ResetPassword.route) { ResetPasswordScreen(navController) }
+        composable("signUpVendedor") { SignUpVendedorScreen(navController) }
+        composable("adminVendedor") { AdminVendedorScreen(navController) }
+        // Asegúrate de tener esta ruta:
+        composable("homeVendedor") {
+            HomeVendedorScreen(navController)
+        }
+        composable("productos_vendedor/{vendedorId}") { backStackEntry ->
+            val vendedorId = backStackEntry.arguments?.getString("vendedorId") ?: ""
+            ProductosDelVendedorScreen(vendedorId = vendedorId, navController = navController)
+        }
+
     }
 }

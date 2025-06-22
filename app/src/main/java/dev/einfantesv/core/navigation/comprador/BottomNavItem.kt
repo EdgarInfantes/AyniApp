@@ -1,4 +1,4 @@
-package dev.einfantesv.core.navigation
+package dev.einfantesv.core.navigation.comprador
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -10,4 +10,7 @@ sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: 
     object Home : BottomNavItem("home", Icons.Default.Home, "Inicio")
     object Profile : BottomNavItem("profile", Icons.Default.AccountBox, "Perfil")
     object Promotions : BottomNavItem("promotions", Icons.Default.Star, "Promociones")
+    object SignUpVendedor : BottomNavItem("signUpVendedor", Icons.Default.Star, "Registrame como vendedor")
+    object AdminVendedor : BottomNavItem("adminVendedor", Icons.Default.Star, "Administrar mi negocio")
+
 }

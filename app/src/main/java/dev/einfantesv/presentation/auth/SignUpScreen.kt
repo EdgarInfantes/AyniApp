@@ -1,4 +1,4 @@
-package dev.einfantesv
+package dev.einfantesv.presentation.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -37,11 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import dev.einfantesv.R
 import dev.einfantesv.core.navigation.Screens
+import dev.einfantesv.models.TempUserData
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -174,6 +175,8 @@ fun SignUpScreen(navController: NavHostController){
                 ),
                 enabled = emailText == valEmailText && emailText.isNotBlank() && valEmailText.isNotBlank(),
             ) {
+                TempUserData.email = emailText
+
                 Text("Siguiente",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.White,

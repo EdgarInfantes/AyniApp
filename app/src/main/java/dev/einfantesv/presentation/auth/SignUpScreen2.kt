@@ -1,14 +1,12 @@
-package dev.einfantesv
+package dev.einfantesv.presentation.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +16,11 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,11 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import dev.einfantesv.R
 import dev.einfantesv.core.navigation.Screens
+import dev.einfantesv.models.TempUserData
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -179,8 +176,8 @@ fun SignUpScreen2(navController: NavHostController){
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    label = { Text("Nombre", color = Color(0xFF00C853)) },
-                    placeholder = { Text("Tu nombre", color = Color(0xFFB5B0AD)) }
+                    label = { Text("Apellido", color = Color(0xFF00C853)) },
+                    placeholder = { Text("Tu Apellido", color = Color(0xFFB5B0AD)) }
                 )
             }
 
@@ -210,6 +207,10 @@ fun SignUpScreen2(navController: NavHostController){
                 ),
                 enabled = userName.isNotBlank() && userApellido.isNotBlank(),
             ) {
+
+                TempUserData.nombre = userName
+                TempUserData.apellido = userApellido
+
                 Text("Siguiente",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.White,
