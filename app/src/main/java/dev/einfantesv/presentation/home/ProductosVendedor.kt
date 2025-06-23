@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -74,15 +75,22 @@ fun ProductosDelVendedorScreen(vendedorId: String, navController: NavHostControl
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp)
+                            .clickable {
+                                navController.navigate("seleccionarCantidad/${producto.id}")
+                            },
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
                     ) {
                         Row(
-                            modifier = Modifier.padding(12.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            val imagePainter = rememberAsyncImagePainter(model = producto.imagen)
+
                             Image(
-                                painter = rememberAsyncImagePainter(producto.imagen),
+                                painter = imagePainter,
                                 contentDescription = producto.nombre,
                                 modifier = Modifier
                                     .size(80.dp)
@@ -90,10 +98,20 @@ fun ProductosDelVendedorScreen(vendedorId: String, navController: NavHostControl
                                 contentScale = ContentScale.Crop
                             )
 
-                            Column {
-                                Text(producto.nombre, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = producto.nombre,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp
+                                )
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text("Precio: ${producto.precio}", fontSize = 14.sp)
+                                Text(
+                                    text = "Precio: ${producto.precio}",
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 14.sp
+                                )
                             }
                         }
                     }
@@ -102,4 +120,3 @@ fun ProductosDelVendedorScreen(vendedorId: String, navController: NavHostControl
         }
     }
 }
-

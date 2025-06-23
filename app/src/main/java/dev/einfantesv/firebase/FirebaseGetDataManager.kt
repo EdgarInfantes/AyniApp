@@ -1,5 +1,7 @@
 package dev.einfantesv.firebase
 
+import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dev.einfantesv.models.ProductoFirebase
 import dev.einfantesv.models.TempUserData.vendedor
@@ -23,29 +25,112 @@ object FirebaseGetDataManager {
                 onComplete(producto)
             }
             .addOnFailureListener {
+
                 onComplete(null)
             }
     }
+    fun getVendedoresQueVendenProducto(
+        nombreProducto: String,
+        onComplete: (List<VendedorFirebase>) -> Unit,
+        onError: (Exception) -> Unit = {}
+    ) {
+        val firestore = FirebaseFirestore.getInstance()
 
-    fun getOrdenesDeVendedor(
-        vendedorId: String,
+        firestore.collection("Productos")
+            .whereEqualTo("nombre", nombreProducto)
+            .get()
+            .addOnSuccessListener { productosSnapshot ->
+                val productos = productosSnapshot.documents
+                val vendedoresIds = productos.mapNotNull { it.getString("uidVendedor") }.toSet()
+
+                if (vendedoresIds.isEmpty()) {
+                    onComplete(emptyList())
+                    return@addOnSuccessListener
+                }
+
+                if (vendedoresIds.size > 10) {
+                    onError(Exception("Demasiados vendedores para buscar con whereIn (máx. 10)"))
+                    return@addOnSuccessListener
+                }
+
+                firestore.collection("Vendedores")
+                    .whereIn("uid", vendedoresIds.toList())
+                    .get()
+                    .addOnSuccessListener { vendedoresSnapshot ->
+                        val vendedores = vendedoresSnapshot.documents.mapNotNull { doc ->
+                            doc.toObject(VendedorFirebase::class.java)
+                        }
+                        onComplete(vendedores)
+                    }
+                    .addOnFailureListener { onError(it) }
+
+            }
+            .addOnFailureListener { onError(it) }
+    }
+
+
+    fun getOrdenesDeComprador(
+        compradorId: String,
         onComplete: (List<Map<String, Any>>) -> Unit,
         onError: (Exception) -> Unit = {}
     ) {
-        firestore.collection("Ordenes")
-            .whereEqualTo("vendedorId", vendedorId)
-            .orderBy("fecha", com.google.firebase.firestore.Query.Direction.DESCENDING)
+        FirebaseFirestore.getInstance()
+            .collection("Pedidos")
+            .whereEqualTo("uidComprador", compradorId)
+            .orderBy("fechaHora", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { snapshot ->
+                Log.d("CompradorOrdenes", "uidComprador: $compradorId")
+                Log.d("CompradorOrdenes", "Documentos recuperados: ${snapshot.size()}")
                 val ordenes = snapshot.documents.mapNotNull { doc ->
                     doc.data?.toMutableMap()?.apply { put("id", doc.id) }
                 }
                 onComplete(ordenes)
             }
             .addOnFailureListener { exception ->
+                Log.e("CompradorOrdenes", "Error al obtener órdenes: ${exception.message}", exception)
                 onError(exception)
             }
     }
+
+
+    fun getOrdenesDeVendedor(
+        vendedorId: String,
+        onComplete: (List<Map<String, Any>>) -> Unit,
+        onError: (Exception) -> Unit = {}
+    ) {
+        firestore.collection("Pedidos")
+            .whereEqualTo("uidVendedor", vendedorId)
+            .orderBy("fechaHora", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                Log.d("CompradorOrdenes", "uidComprador: ${vendedorId}")
+                Log.d("CompradorOrdenes", "Documentos recuperados: ${snapshot.size()}")
+                val ordenes = snapshot.documents.mapNotNull { doc ->
+                    doc.data?.toMutableMap()?.apply { put("id", doc.id) }
+                }
+                onComplete(ordenes)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("VendedorOrdenes", "Error al obtener órdenes: ${exception.message}", exception)
+                onError(exception)
+            }
+    }
+
+    fun getNombre(coleccion: String, uid: String, onComplete: (String?) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection(coleccion)
+            .document(uid)
+            .get()
+            .addOnSuccessListener { doc ->
+                val nombre = doc.getString("nombre") ?: doc.getString("displayName")
+                onComplete(nombre)
+            }
+            .addOnFailureListener {
+                onComplete(null)
+            }
+    }
+
 
 
 
@@ -89,5 +174,55 @@ object FirebaseGetDataManager {
             .await()
         return snapshot.exists()
     }
+    fun getProductoPorId(productoId: String, onComplete: (ProductoFirebase?) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("Productos")
+            .document(productoId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val producto = snapshot.toObject(ProductoFirebase::class.java)
+                onComplete(producto)
+            }
+            .addOnFailureListener {
+                onComplete(null)
+            }
+    }
+
+    fun realizarPedido(
+        producto: ProductoFirebase,
+        cantidad: Int,
+        nota: String,
+        onComplete: (Boolean) -> Unit
+    ) {
+        val uidComprador = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val pedido = mapOf(
+            "productoId" to producto.id,
+            "productoNombre" to producto.nombre,
+            "uidVendedor" to producto.uidVendedor,
+            "uidComprador" to uidComprador,
+            "cantidad" to cantidad,
+            "nota" to nota,
+            "precioTotal" to (producto.precio?.toDoubleOrNull()?.times(cantidad) ?: 0.0),
+            "fechaHora" to com.google.firebase.Timestamp.now(),
+            "estado" to "Pendiente"
+        )
+
+        FirebaseFirestore.getInstance()
+            .collection("Pedidos")
+            .add(pedido)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
+    }
+
+    fun marcarComoEntregado(pedidoId: String, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("Pedidos")
+            .document(pedidoId)
+            .update("estado", "Entregado")
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onError(e) }
+    }
+
 
 }

@@ -65,4 +65,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx") //Fire
     implementation("com.google.firebase:firebase-storage") //Sotrage
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0") //Sync color system bar
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
+    implementation("androidx.compose.material3:material3:1.1.2") // o una versión estable más reciente
+
 }
