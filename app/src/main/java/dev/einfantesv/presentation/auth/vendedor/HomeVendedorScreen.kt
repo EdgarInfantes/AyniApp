@@ -182,6 +182,7 @@ fun OrdenesScreen(ordenes: List<Map<String, Any>>) {
                 val cantidad = orden["cantidad"]?.toString() ?: "1"
                 val total = orden["precioTotal"]?.toString() ?: "0.0"
                 val ordenId = orden["id"] as? String
+                val nota = orden["nota"] as? String
 
                 // Estado local para refrescar visualmente si fue entregado
                 var estado by remember { mutableStateOf(orden["estado"] as? String ?: "Pendiente") }
@@ -235,6 +236,7 @@ fun OrdenesScreen(ordenes: List<Map<String, Any>>) {
                                 Text("Estado: $estado", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                                 Text("Comprador • $nombreComprador", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text("Entregado • $fechaFormateada", fontSize = 14.sp)
+                                Text("Lugar de entrega: $nota", fontSize = 14.sp)
                                 Text("S/$total • $cantidad producto(s)", fontSize = 14.sp)
                             }
                         }

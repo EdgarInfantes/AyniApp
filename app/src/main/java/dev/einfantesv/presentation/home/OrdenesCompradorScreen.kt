@@ -68,6 +68,7 @@ fun OrdenesCompradorScreen(
                 val cantidad = orden["cantidad"]?.toString() ?: "1"
                 val total = orden["precioTotal"]?.toString() ?: "0.0"
                 val estado = orden["estado"] as? String ?: "Pendiente"
+                val nota = orden["nota"] as? String
 
                 val fecha = (orden["fechaHora"] as? Timestamp)?.toDate()
                 val fechaFormateada = fecha?.let {
@@ -115,7 +116,8 @@ fun OrdenesCompradorScreen(
 
                         Column(modifier = Modifier.weight(1f)) {
                             Text("$estado • $fechaFormateada", fontSize = 14.sp)
-                            Text(nombreVendedor, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text("Vendedor: $nombreVendedor", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text("Lugar de entrega: $nota", fontSize = 14.sp)
                             Text("S/$total • $cantidad producto(s)", fontSize = 14.sp)
 
                             Spacer(modifier = Modifier.height(8.dp))
