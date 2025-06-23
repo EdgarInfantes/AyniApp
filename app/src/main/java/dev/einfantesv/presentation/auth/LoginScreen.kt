@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +47,7 @@ import dev.einfantesv.core.navigation.Screens
 import dev.einfantesv.firebase.FirebaseAuthManager
 import dev.einfantesv.models.TempUserData
 import dev.einfantesv.util.ActionButton
+import dev.einfantesv.util.AnimatedSnackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,10 +58,20 @@ fun LoginScreen(navController: NavHostController){
     //Variables del LoginScreen
     var userText by remember { mutableStateOf("") }
     var passText by remember { mutableStateOf("") }
-    var snackbarVisible by remember { mutableStateOf(false) }
     var snackbarMessage by remember { mutableStateOf("") }
     var snackbarColor by remember { mutableStateOf(Color.Green) }
     val viewModel: UserSessionViewModel = viewModel()
+
+    var mensaje by remember { mutableStateOf("") }
+    var snackbarVisible by remember { mutableStateOf(false) }
+
+    // Oculta el snackbar automáticamente después de 2 segundos
+    LaunchedEffect(snackbarVisible) {
+        if (snackbarVisible) {
+            kotlinx.coroutines.delay(2000)
+            snackbarVisible = false
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -184,7 +197,8 @@ fun LoginScreen(navController: NavHostController){
                                 }
                             }
 
-
+                            snackbarMessage = "Bienvenido"
+                            snackbarColor = Color(0xFF00C853)
 
 
                         }
@@ -195,6 +209,9 @@ fun LoginScreen(navController: NavHostController){
                         snackbarVisible = true
                     }
                 } else {
+                    snackbarVisible = true
+                    snackbarMessage = "Complete los campos"
+                    snackbarColor = Color(0xFFF44336)
                 }
             }
         )
@@ -257,5 +274,24 @@ fun LoginScreen(navController: NavHostController){
             )
 
         }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (snackbarVisible) {
+                AnimatedSnackbar(
+                    visible = snackbarVisible,
+                    message = snackbarMessage, // <-- aquí estaba el problema
+                    backgroundColor = snackbarColor,
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .heightIn(min = 48.dp)
+                )
+            }
+        }
+
     }
 }

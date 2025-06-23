@@ -269,11 +269,13 @@ fun OrdenesScreen(ordenes: List<Map<String, Any>>) {
         }
     }
 
-    AnimatedSnackbar(
-        visible = snackbarVisible,
-        message = mensaje,
-        backgroundColor = Color(0xFF00C853),
-    )
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        AnimatedSnackbar(
+            visible = snackbarVisible,
+            message = mensaje,
+            backgroundColor = Color(0xFF00C853)
+        )
+    }
 }
 
 
