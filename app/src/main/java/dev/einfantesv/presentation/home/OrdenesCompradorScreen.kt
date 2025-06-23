@@ -121,7 +121,7 @@ fun OrdenesCompradorScreen(
                             Text("S/$total • $cantidad producto(s)", fontSize = 14.sp)
 
                             Spacer(modifier = Modifier.height(8.dp))
-
+                            //Wor
                             Row(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier.fillMaxWidth()
