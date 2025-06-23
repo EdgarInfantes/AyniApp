@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import dev.einfantesv.UserSessionViewModel
 import dev.einfantesv.core.navigation.Screens
 import dev.einfantesv.firebase.FirebaseAuthManager
+import dev.einfantesv.models.TempUserData
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -30,7 +31,7 @@ fun SignUpVendedorScreen(navController: NavHostController) {
     val userSessionViewModel: UserSessionViewModel = viewModel()
     val userData by userSessionViewModel.userData.collectAsState()
 
-    val nombreNegocio = userData?.nombre ?: ""
+
     var contacto by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf("") }
     val horarios = remember { mutableStateMapOf<String, Pair<String, String>>() }
@@ -51,6 +52,7 @@ fun SignUpVendedorScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        /*
         Text("Nombre del negocio:", fontSize = 16.sp)
         Text(
             text = nombreNegocio,
@@ -58,6 +60,8 @@ fun SignUpVendedorScreen(navController: NavHostController) {
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
         )
+
+         */
 
         OutlinedTextField(
             value = contacto,
@@ -100,7 +104,9 @@ fun SignUpVendedorScreen(navController: NavHostController) {
                 scope.launch {
                     try {
                         val result = FirebaseAuthManager.registerAsVendor(
-                            nombreNegocio = nombreNegocio,
+                            nombre = TempUserData.nombre,
+                            apellido = TempUserData.apellido,
+                            email = TempUserData.email,
                             descripcion = "", // pendiente
                             contacto = contacto,
                             horarios = horarios.toMap(),

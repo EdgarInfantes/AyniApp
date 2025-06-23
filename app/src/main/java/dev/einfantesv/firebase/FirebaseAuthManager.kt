@@ -1,6 +1,7 @@
 package dev.einfantesv.firebase
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -51,7 +52,9 @@ object FirebaseAuthManager {
 
     // Registro extendido del vendedor (datos adicionales)
     suspend fun registerAsVendor(
-        nombreNegocio: String,
+        nombre: String,
+        apellido: String,
+        email: String,
         descripcion: String,
         contacto: String,
         horarios: Map<String, Pair<String, String>>,
@@ -63,9 +66,15 @@ object FirebaseAuthManager {
 
             val uid = currentUser.uid
 
+            val nombreCompleto = "$nombre $apellido".trim()
+
             val vendedorData = mapOf(
+
+
+
                 "uid" to uid,
-                "nombre" to nombreNegocio.trim(), // <- nos aseguramos de guardar bien el nombre
+                "email" to email,
+                "nombre" to nombreCompleto, // <- nos aseguramos de guardar bien el nombre
                 "contacto" to contacto,
                 "imagen" to logoUrl,
                 "horarios" to horarios.mapValues {
@@ -81,6 +90,8 @@ object FirebaseAuthManager {
                 .document(uid)
                 .set(vendedorData)
                 .await()
+
+            Log.d("RegistroVendedor", "Nombre del vendedor: ${nombreCompleto.trim()}")
 
             Result.success(Unit)
 
