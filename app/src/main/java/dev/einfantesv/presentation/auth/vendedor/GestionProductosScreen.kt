@@ -10,11 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
 import dev.einfantesv.models.ProductoFirebase
 
 @Composable
@@ -30,7 +32,13 @@ fun GestionProductosScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text("Mis Productos", fontSize = 22.sp, color = Color(0xFF00C853))
+        Text(
+            "Administrar Mis Productos",
+            fontSize = 22.sp,
+            color = Color(0xFF00C853),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
         Spacer(modifier = Modifier.height(12.dp))
 
         AgregarProductoForm(onAgregar = { nombre, precio, imagen ->
@@ -38,6 +46,13 @@ fun GestionProductosScreen(
         })
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Mis Productos",
+            fontSize = 20.sp,
+            color = Color(0xFF00C853),
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
         LazyColumn {
             items(productos) { producto ->
@@ -122,6 +137,49 @@ fun ProductoCard(producto: ProductoFirebase, onClick: (ProductoFirebase) -> Unit
             .fillMaxWidth()
             .padding(vertical = 6.dp)
             .clickable { onClick(producto) },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            AsyncImage(
+                model = producto.imagen,
+                contentDescription = "Imagen del producto",
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(end = 16.dp),
+                contentScale = ContentScale.Crop
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    producto.nombre,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Precio: ${producto.precio}")
+            }
+        }
+    }
+}
+
+
+/*
+@Composable
+fun ProductoCard(producto: ProductoFirebase, onClick: (ProductoFirebase) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp)
+            .clickable { onClick(producto) },
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -131,7 +189,7 @@ fun ProductoCard(producto: ProductoFirebase, onClick: (ProductoFirebase) -> Unit
         }
     }
 }
-
+*/
 @Composable
 fun AgregarProductoForm(
     onAgregar: (nombre: String, precio: String, imagenUrl: String) -> Unit
